@@ -2,23 +2,16 @@ const gulp = require('gulp');
 const webserver = require('gulp-webserver');
 const concat = require("gulp-concat");
 const sass = require('gulp-sass');
-const sftp = require('gulp-sftp');
 const fileList = require('gulp-filelist');
 const concatUtil = require('gulp-concat-util');
 const path = require('path');
 const bulkSass = require('gulp-sass-bulk-import');
-const del = require('del');
 const runSequence = require('run-sequence');
 const uglify = require('gulp-uglify');
 const cssMin = require('gulp-cssmin');
-const htmlMin = require('gulp-htmlmin');
-const rename = require('gulp-rename');
-const babel = require("gulp-babel");
 const browserify = require("browserify");
 const babelify = require("babelify");
 const source = require("vinyl-source-stream");
-const transform = require('vinyl-transform');
-const through2 = require("through2");
 const events = require("events");
 
 var ev = new events.EventEmitter;
@@ -63,22 +56,6 @@ gulp.task('babelify', function () {
         .pipe(gulp.dest("htdocs"));
 });
 
-gulp.task('babelify-worker', function () {
-    return browserify({
-        entries: "src/worker/worker-connector.js",
-        extensions: [".js"]
-    })
-        .transform(babelify, {presets: ['es2015']})
-        .bundle()
-        .on("error", function (err) {
-            console.log("Error : " + err.message);
-            console.log(err.stack);
-            ev.emit("error");
-        })
-        .pipe(source("worker-connector.js"))
-        .pipe(gulp.dest("htdocs/worker"));
-});
-
 gulp.task('concat-html', function() {
     return gulp.src(['src/view/**/*.html'])
         .pipe(concatUtil('main.html',{process: function(src, filePath) {
@@ -100,31 +77,9 @@ gulp.task('imageList', function(){
         .pipe(gulp.dest('htdocs/img'));
 });
 
-gulp.task('upload', ['build'], function () {
-    // using private key "~/.ssh/id_dsa" and "/.ssh/id_rsa"
-    return gulp.src([
-        'htdocs/**/*'
-        ,'!htdocs/.gitignore'
-    ]).pipe(sftp({
-            host: 'sbi.cross-dev.net',
-            user: 'ka_yamamoto',
-            remotePath: '/var/www/sbi/toshinsp',
-            pass: 'q8xnc2rj'
-        }));
-});
-
-gulp.task('minify-html', ['concat-html'], function(){
-    return gulp.src('htdocs/main.html')
-        .pipe(htmlMin({
-            collapseWhitespace: true
-        }))
-        .pipe(gulp.dest('htdocs'));
-});
-
 gulp.task('minify-css', ['sass'], function(){
     return gulp.src('htdocs/style.css')
         .pipe(cssMin())
-        // .pipe(rename({suffix: '.min'}))
         .pipe(gulp.dest('htdocs'));
 });
 
