@@ -99,13 +99,12 @@ gulp.task('minify-js', ['babelify'], function () {
         .pipe(gulp.dest('htdocs'));
 });
 
-// upload用のビルド：minify有り
+// ビルド：minify有り
 gulp.task('build', function(callback) {
     return runSequence(
         'minify-css',
         ['minify-html', 'imageList'],
         'minify-js',
-        'babelify-worker',
         callback
     );
 });
@@ -116,7 +115,6 @@ gulp.task('debug-build', function(callback) {
         'sass',
         ['concat-html', 'imageList'],
         'babelify',
-        'babelify-worker',
         callback
     );
 });

@@ -1,6 +1,6 @@
 let sharedInstance = new ViewService();
 
-export default class ViewService {
+class ViewService {
     static get instance() {
         return sharedInstance
     }
@@ -13,3 +13,5 @@ export default class ViewService {
 
     }
 }
+
+export default new ViewService();
