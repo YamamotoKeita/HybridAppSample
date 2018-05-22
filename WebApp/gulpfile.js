@@ -56,6 +56,22 @@ gulp.task('babelify', function () {
         .pipe(gulp.dest("htdocs"));
 });
 
+gulp.task('babelify-worker', function () {
+    return browserify({
+        entries: "src/worker/worker.js",
+        extensions: [".js"]
+    })
+        .transform(babelify, {presets: ['es2015']})
+        .bundle()
+        .on("error", function (err) {
+            console.log("Error : " + err.message);
+            console.log(err.stack);
+            ev.emit("error");
+        })
+        .pipe(source("worker.js"))
+        .pipe(gulp.dest("htdocs"));
+});
+
 gulp.task('concat-html', function() {
     return gulp.src(['src/view/**/*.html'])
         .pipe(concatUtil('main.html',{process: function(src, filePath) {
@@ -115,12 +131,13 @@ gulp.task('debug-build', function(callback) {
         'sass',
         ['concat-html', 'imageList'],
         'babelify',
+        'babelify-worker',
         callback
     );
 });
 
 gulp.task('watch', function(){
-    var w_babelify = gulp.watch(['src/**/*.js'], ['babelify','babelify-worker']);
+    var w_babelify = gulp.watch(['src/**/*.js'], ['babelify', 'babelify-worker']);
     var w_concat_html = gulp.watch(['src/view/**/*.html'], ['concat-html']);
     var w_sass = gulp.watch('src/**/*.scss', ['sass']);
 

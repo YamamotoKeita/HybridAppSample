@@ -3,7 +3,7 @@ let connectionMap = {};
 onmessage = function(event) {
     let param = event.data;
 
-    switch (param.method) {
+    switch (param.action) {
         case "connect":
             startConnection(param);
             break;
@@ -13,6 +13,14 @@ onmessage = function(event) {
     }
 };
 
+/**
+ * param.url: 通信先URL
+ * param.id: 通信を識別する一意なid
+ * param.method: HTTPメソッド
+ * param.headers: リクエストヘッダー
+ *
+ * @param param
+ */
 function startConnection(param) {
 
     let xhr = new XMLHttpRequest();
@@ -55,11 +63,11 @@ function startConnection(param) {
         onHttpFinished(param.id, xhr, 'aborted');
     };
 
-    let httpMethod = param.type ? param.type : 'GET';
+    let httpMethod = param.method ? param.method : 'GET';
     xhr.open(httpMethod, param.url);
     xhr.setRequestHeader('Cache-Control', 'no-cache');
     if (param.headers) {
-        for (var key in param.headers) {
+        for (let key in param.headers) {
             xhr.setRequestHeader(key, param.headers[key]);
         }
     }
@@ -70,7 +78,7 @@ function startConnection(param) {
 
 function onHttpFinished(id, xhr, connectionStatus) {
 
-    var data = {
+    let data = {
         id: id,
         connectionStatus: connectionStatus,
         httpStatus: xhr.status,
@@ -83,7 +91,7 @@ function onHttpFinished(id, xhr, connectionStatus) {
 }
 
 function abortConnection(id) {
-    var xhr = connectionMap[id];
+    let xhr = connectionMap[id];
     if (xhr) {
         xhr.abort();
         delete connectionMap[id];

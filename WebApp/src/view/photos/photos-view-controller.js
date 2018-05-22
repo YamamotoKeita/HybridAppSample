@@ -1,6 +1,7 @@
 import ViewController from "../../corelib/view-controller";
 import PhotosAPI from "../../api/photos-api";
 import TableView from "../../corelib/table-view";
+import PhotosCell from "./photos-cell";
 
 export default class PhotosViewController extends ViewController {
 
