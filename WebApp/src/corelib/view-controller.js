@@ -1,13 +1,15 @@
 export default class ViewController {
 
     constructor() {
+        this.element = undefined;
+        this.key = undefined;
     }
 
     viewWillAppear() {
 
     }
 
-    dom(selector) {
+    getElement(selector) {
 
     }
 }

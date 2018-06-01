@@ -1,0 +1,45 @@
+
+* {
+	box-sizing:border-box;
+	-webkit-box-sizing:border-box;
+}
+
+html, body{
+	width:100%;
+	height:100%;
+	margin: 0; padding: 0;
+	font-size: 4.0vmin;
+	color: black;
+	overflow: hidden;
+}
+
+button {
+	user-select:none;
+	-webkit-user-select:none; // テキスト長押しの選択を無効化
+	background-color: gray;
+	white-space: nowrap;
+}
+
+div {
+	position: relative;
+	-webkit-tap-highlight-color: transparent; // iOSでタップ時にハイライトするのを無効化
+	-webkit-touch-callout: none;
+	user-select: none;
+	-webkit-user-select: none;
+}
+
+img {
+	border:none;
+	touch-callout:none;
+	-webkit-touch-callout:none; // 長押し時のメニュー表示を無効化
+}
+
+input, textarea, select, button {
+	font-family: inherit;
+	font-size: inherit;
+	font-weight: inherit;
+}
+
+table {border-collapse:collapse; border-spacing:0;}
+
+ul{list-style:none;}

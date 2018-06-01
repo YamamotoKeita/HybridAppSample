@@ -9,7 +9,7 @@ export default class PhotosViewController extends ViewController {
         super();
 
         this.records = [];
-        this.tableView = new TableView(this.dom('#table-view'));
+        this.tableView = new TableView(this.getElement('#table-view'));
         this.tableView.setDelegate({
             rowCount: this.rowCount,
             cellForRow: this.cellForRow
