@@ -123,9 +123,56 @@ var _mainViewController2 = _interopRequireDefault(_mainViewController);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-_viewService2.default.loadTemplateFiles(function () {
-    _viewService2.default.setScreen(_mainViewController2.default);
-});
+// Base64のフォントデータをStyleSheetに設定する
+window.setBase64FontData = function (base64) {
+
+    var style = document.createElement('style');
+    style.appendChild(document.createTextNode("\n        @font-face {\n            font-family: 'Noto Sans JP';\n            src: url('data:font/woff2;base64," + base64 + "') format('woff2');\n            font-weight: normal;\n        }\n    "));
+    document.head.appendChild(style);
+};
+
+postToNative('transferFontData');
+waitFont();
+
+// ネイティブアプリの処理を呼び出す
+function postToNative(name, param) {
+
+    var handler = undefined;
+    if (window !== undefined && window.webkit !== undefined && window.webkit.messageHandlers !== undefined) {
+        handler = window.webkit.messageHandlers;
+    } else if (typeof Android !== "undefined") {
+        handler = Android;
+    }
+
+    if (handler !== undefined && handler[name] !== undefined) {
+        if (handler[name].postMessage !== undefined) {
+            handler[name].postMessage(param);
+        } else {
+            handler[name](param);
+        }
+    }
+}
+
+// フォントデータが読み込まれるのを待つ
+function waitFont() {
+    var fontSet = document.fonts;
+    if (fontSet !== undefined) {
+        fontSet.load("20px \"Noto Sans JP\"");
+        fontSet.ready.then(function (fontFaceSet) {
+            onFontLoaded();
+        });
+    } else {
+        onFontLoaded();
+    }
+}
+
+// フォントデータ読み込み完了時の処理
+function onFontLoaded() {
+    // 画面を表示
+    _viewService2.default.loadTemplateFiles(function () {
+        _viewService2.default.setScreen(_mainViewController2.default);
+    });
+}
 
 },{"./service/view-service":4,"./view/main/main-view-controller":5}],4:[function(require,module,exports){
 'use strict';
